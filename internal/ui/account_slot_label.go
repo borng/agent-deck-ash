@@ -23,11 +23,18 @@ type accountPresentation struct {
 
 func newAccountPresentation(account string) accountPresentation {
 	label := storedAccountLabel(account)
+	// No stored slot is the common case and says nothing about the running
+	// login, so the row badge would be pure noise on every session. The label
+	// still travels in the snapshot for the detail card, which has the room to
+	// explain "inherited" and is the place a user goes to ask the question.
+	if account == "" {
+		return accountPresentation{label: label}
+	}
 	return accountPresentation{
 		label:  label,
 		badge:  storedAccountPrefix + label + "]",
 		width:  len(storedAccountPrefix) + cellWidth(label) + 1,
-		quoted: account != "",
+		quoted: true,
 	}
 }
 

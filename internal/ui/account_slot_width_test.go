@@ -29,7 +29,9 @@ func TestStoredAccountWidthMatrix(t *testing.T) {
 						require.NotContains(t, line, "\a")
 						require.NotContains(t, line, "\r")
 						require.NotContains(t, line, "\n")
-						if width >= 40 {
+						if slot == "" {
+							require.NotContains(t, line, "[account:")
+						} else if width >= 40 {
 							require.Contains(t, line, "[account:")
 						}
 					}
