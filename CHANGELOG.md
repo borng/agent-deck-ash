@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- A session with no stored account slot no longer carries an ` [account:inherited]` badge on its row. "inherited" reports that no slot is stored — it is not a claim about which login the agent is running as — so for most decks the badge appeared on every row, said nothing, and spent width the title needed in a narrow sidebar. The empty slot now renders a zero-width badge; the session info card still shows `Account slot: inherited`, where there is room for the distinction. Rows with a real stored slot are unchanged (`[account:"work"]`).
+
 ## [1.16.4] - 2026-09-07
 
 The persistent remote channel is production-grade: bounded, self-healing and honest at fleet scale, with faster pushes and a live preview pane.
