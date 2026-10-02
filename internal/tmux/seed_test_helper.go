@@ -93,3 +93,23 @@ func ExpirePaneInfoCacheForTest(t testing.TB) {
 		paneCacheMu.Unlock()
 	})
 }
+
+// SeedSessionCacheForTest replaces the default-socket session listing with the
+// supplied names and marks it fresh; cleanup restores the zero state.
+func SeedSessionCacheForTest(t testing.TB, names ...string) {
+	t.Helper()
+	data := make(map[string]int64, len(names))
+	for _, n := range names {
+		data[n] = time.Now().Unix()
+	}
+	sessionCacheMu.Lock()
+	sessionCacheData = data
+	sessionCacheTime = time.Now()
+	sessionCacheMu.Unlock()
+	t.Cleanup(func() {
+		sessionCacheMu.Lock()
+		sessionCacheData = nil
+		sessionCacheTime = time.Time{}
+		sessionCacheMu.Unlock()
+	})
+}

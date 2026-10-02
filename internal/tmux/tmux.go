@@ -3307,6 +3307,25 @@ func (s *Session) Exists() bool {
 	return err == nil
 }
 
+// AbsentFromCache reports, without spawning a subprocess, that the current
+// session listing positively shows this session missing from the default
+// server and no PipeManager connection holds it. Exists() does not trust that
+// negative because it can transiently miss a LIVE session; a caller may only
+// use it to keep an already-dead session dead, where a miss just delays
+// noticing a revival until the next refresh.
+func (s *Session) AbsentFromCache() bool {
+	if strings.TrimSpace(s.SocketName) != DefaultSocketName() {
+		return false
+	}
+	if exists, cacheValid := sessionExistsFromCache(s.Name); !cacheValid || exists {
+		return false
+	}
+	if pm := GetPipeManager(); pm != nil && pm.IsConnected(s.Name) {
+		return false
+	}
+	return true
+}
+
 // ExistsCached is a cheap, non-blocking liveness check for hot periodic loops
 // that iterate over ALL sessions every tick (e.g. the background configure loop
 // and theme propagation). It NEVER spawns a subprocess on the calling
